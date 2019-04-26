@@ -66,6 +66,11 @@ first_person = int(input("선공:1, 후공:2  선택하세요. :"))
 if first_person == 1:
     while True:
         i = int(input(menu_str))
+        while True:
+            if(i!=4):
+                break
+            print("선공은 4번 컬럼에 놓을수 없습니다")
+            i = int(input(menu_str))4
         if choose(i, 1):
             break
 
