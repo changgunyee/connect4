@@ -2,7 +2,7 @@
 
 2019 1학기 인공지능 과제 connect4 ai 프로젝트 레포지토리입니다.
 
-numpy = 10.0.1
+numpy-1.16.3
 
 python3
 
