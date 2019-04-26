@@ -6,7 +6,6 @@ numpy-1.16.3
 
 python3
 
-connect4가 GUI파일
-connect4_ai가 ai입니다.
+connect4가 GUI파일, connect4_ai가 ai입니다.
 
 coonnect4.py를 실행하면 게임이 실행되고 connect4_ai의 ai함수에서 놓을 column을 받아옵니다.
