@@ -9,8 +9,8 @@ column_index = [0 for num in range(COLUMN_SIZE)]
 
 menu_str = "1 ~ 7번 중 컬럼 선택하세요."
 
-"""AI는 0번, 사용자는 1번입니다."""
-"""-1은 빈칸, 0은 AI, 1은 사용자입니다."""
+"""AI는 1번, 사용자는 0번입니다."""
+"""-1은 빈칸, 1은 AI, 0은 사용자입니다."""
 
 
 def print_board():
@@ -25,7 +25,7 @@ def print_board():
         print("|")
 
 
-def choose(column, user=0):
+def choose(column, user=1): # AI가 두는것이 1
     column -= 1
     if column_index[column] >= ROW_SIZE or column < 0 or column >= COLUMN_SIZE:
         return False
@@ -70,15 +70,15 @@ if first_person == 1:
             if(i!=4):
                 break
             print("선공은 4번 컬럼에 놓을수 없습니다")
-            i = int(input(menu_str))4
-        if choose(i, 1):
+            i = int(input(menu_str))
+        if choose(i, 0):    # 사람이 두는것이 0
             break
 
 while True:
     print("AI가 밑에 처럼 놓았습니다.")
     while True:
         choice_ai = ai(board)
-        if choose(choice_ai):
+        if choose(choice_ai): # AI가 두는것이 1
             break
 
     if is_game_over(0):
