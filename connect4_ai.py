@@ -47,22 +47,25 @@ def win_recursive(board, alpha, beta,level=0):
             return min_wincount
 
 
-def copyChildBoard(parentBoard, col_index, level):
+def copyChildBoard(parentBoard, col_index, level): #col_index 의 height만 알아내면 됩니다
     childBoard = np.copy(parentBoard)
-    column_height = [0 for num in range(COLUMN_SIZE)]
-    for i in range(COLUMN_SIZE):
-        for j in range(ROW_SIZE):
-            if (parentBoard[j,i] == -1):
-                column_height[i] = j
-                break
+    column_height = 0
+    #if parentBoard[ROW_SIZE-1,col_index] == -1 :
+        #column_height = ROW_SIZE
+    #else :
+        #column_height = np.argmin(parentBoard[:,col_index])
+    for i in range(ROW_SIZE):
+        if (parentBoard[i, col_index] == -1):
+            column_height = i
+            break
 
-    if column_height[col_index] >= ROW_SIZE or col_index < 0 or col_index >= COLUMN_SIZE:
+    if column_height >= ROW_SIZE or col_index < 0 or col_index >= COLUMN_SIZE:
         return False
 
     if (level % 2 == 0):  # 짝수인 경우 AI 차례!
-        childBoard[column_height[col_index],col_index] = 1
+        childBoard[column_height, col_index] = 1
     else:  # 홀수인 경우 상대방 차례
-        childBoard[column_height[col_index],col_index] = 0
+        childBoard[column_height, col_index] = 0
 
     return childBoard
 
