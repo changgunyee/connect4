@@ -15,32 +15,36 @@ def win_recursive(board, alpha, beta,level=0):
     if (level == DEPTH):
         return wincount_h(board)
 
-    array = np.full(COLUMN_SIZE, 0)
-
     if (level % 2 == 0):
+        array = np.full(COLUMN_SIZE, -MAX_COUNT)
         max_wincount=-MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
-            #cb = copyChildBoard(board, col_index, level)
-            #if detect(cb):
-                #max_wincount = -5000
-            #else:
-            array[col_index]=win_recursive(copyChildBoard(board, col_index, level), alpha, beta, level + 1)
-            max_wincount=max(array[col_index], max_wincount)
-            alpha = max(alpha, max_wincount)
-            if beta <= alpha:
-                break
+            if board[5,col_index] != -1 :
+                child_board=copyChildBoard(board, col_index, level)
+                if child_board==False:
+                    return MAX_COUNT
+                array[col_index]=win_recursive(child_board, alpha, beta, level + 1)
+                max_wincount=max(array[col_index], max_wincount)
+                alpha = max(alpha, max_wincount)
+                if beta <= alpha:
+                    break
         if level == 0:
             return np.argmax(array)
         else:
             return max_wincount
     else:
+        array = np.full(COLUMN_SIZE, MAX_COUNT)
         min_wincount = MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
-            array[col_index] = win_recursive(copyChildBoard(board, col_index, level), alpha, beta, level + 1)
-            min_wincount = min(array[col_index], min_wincount)
-            beta = min(beta, min_wincount)
-            if beta <= alpha:
-                break
+            if board[col_index]!=-1:
+                child_board=copyChildBoard(board, col_index, level)
+                if child_board==False:
+                    return -MAX_COUNT
+                array[col_index] = win_recursive(child_board, alpha, beta, level + 1)
+                min_wincount = min(array[col_index], min_wincount)
+                beta = min(beta, min_wincount)
+                if beta <= alpha:
+                    break
         if level == 0:
             return np.argmax(array)
         else:
@@ -59,13 +63,39 @@ def copyChildBoard(parentBoard, col_index, level): #col_index 의 height만 알�
             column_height = i
             break
 
-    if column_height >= ROW_SIZE or col_index < 0 or col_index >= COLUMN_SIZE:
+
+    # if (level % 2 == 0):  # 짝수인 경우 AI 차례!
+    #     arr=[1,1,1,1]
+    #     childBoard[column_height, col_index] = 1
+    #
+    # else:  # 홀수인 경우 상대방 차례
+    #     arr[0,0,0,0]
+    #     childBoard[column_height, col_index] = 0
+
+    level_modulo_2=level%2+1
+    childBoard[column_height, col_index] = level_modulo_2
+    arr=[level_modulo_2 ,level_modulo_2 ,level_modulo_2 ,level_modulo_2 ]
+
+    if column_height > 3 and childBoard[column_height - 3:column_height + 1, col_index].tolist() == arr: #linetype |
         return False
 
-    if (level % 2 == 0):  # 짝수인 경우 AI 차례!
-        childBoard[column_height, col_index] = 1
-    else:  # 홀수인 경우 상대방 차례
-        childBoard[column_height, col_index] = 0
+    for col in range(COLUMN_SIZE - 3): #linetype -
+        if childBoard[column_height, col:col + 4] == arr:
+            return False
+
+    if column_height >= col_index and col_index > 2 and col_index < 6: #linetype /
+        col_index = 0
+        column_height -= col_index
+        for row in range(column_height, 6):
+            if childBoard[row:row + 4, row - column_height:row - column_height + 4].diagonal().tolist() == arr:
+                return False
+
+    if col_index > column_height and col_index > 0 and col_index < 4: #linetype \
+        column_height = 0
+        col_index -= column_height
+        for col in range(col_index, 7):
+            if childBoard[col - col_index:col - col_index + 4, col:col + 4].diagonal().tolist() == arr:
+                return False
 
     return childBoard
 
