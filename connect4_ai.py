@@ -3,7 +3,7 @@ import time
 DEPTH = 7 # DEPTH는 성능에 따라 조절
 ROW_SIZE = 6
 COLUMN_SIZE = 7
-MAX_COUNT=9999999999999
+MAX_COUNT=99999999
 
 def ai(board):
     start_time = time.time() 
@@ -16,7 +16,7 @@ def win_recursive(board, alpha, beta,level=0):
         return wincount_h(board)
 
     if (level % 2 == 0):
-        array = np.full(COLUMN_SIZE, -MAX_COUNT)
+        array = np.full(COLUMN_SIZE, MAX_COUNT)
         max_wincount = -MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
             if board[5, col_index] == -1 :
@@ -33,7 +33,7 @@ def win_recursive(board, alpha, beta,level=0):
         else:
             return max_wincount
     else:
-        array = np.full(COLUMN_SIZE, MAX_COUNT)
+        array = np.full(COLUMN_SIZE, -MAX_COUNT)
         min_wincount = MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
             if board[5, col_index] == -1:
@@ -72,7 +72,7 @@ def copyChildBoard(parentBoard, col_index, level): #col_index 의 height만 알�
     #     arr[0,0,0,0]
     #     childBoard[column_height, col_index] = 0
 
-    level_modulo_2 = level%2+1
+    level_modulo_2 = (level+1)%2
     childBoard[column_height, col_index] = level_modulo_2
     arr=[level_modulo_2 ,level_modulo_2 ,level_modulo_2 ,level_modulo_2 ]
 
@@ -136,9 +136,9 @@ def casefunction (list):        # 가중치(return 값)은 임의로 입력된 �
     elif(list == [-1, 0, 0, -1]):
         return -11
     elif(list == [0, 0, 0, -1] or list == [-1, 0, 0, 0]):
-        return - 500
+        return -500
     elif(list == [0, 0, -1, 0] or list == [0, -1, 0, 0]):
-        return - 300
+        return -300
     elif(list == [1, -1, -1, -1] or list == [-1, -1, -1, 1]):
         return 1
     elif(list == [-1, 1, -1, -1] or list == [-1, -1, 1, -1]):
