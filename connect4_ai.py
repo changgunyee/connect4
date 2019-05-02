@@ -16,7 +16,7 @@ def win_recursive(board, alpha, beta,level=0):
         return wincount_h(board)
 
     if (level % 2 == 0):
-        array = np.full(COLUMN_SIZE, MAX_COUNT)
+        array = np.full(COLUMN_SIZE, -MAX_COUNT)
         max_wincount = -MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
             if board[5, col_index] == -1 :
@@ -33,7 +33,7 @@ def win_recursive(board, alpha, beta,level=0):
         else:
             return max_wincount
     else:
-        array = np.full(COLUMN_SIZE, -MAX_COUNT)
+        array = np.full(COLUMN_SIZE, MAX_COUNT)
         min_wincount = MAX_COUNT
         for col_index in range(0, COLUMN_SIZE):
             if board[5, col_index] == -1:
