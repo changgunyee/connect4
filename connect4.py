@@ -31,6 +31,7 @@ def choose(column, user=1): # AI가 두는것이 1
 
     board[column_height[column]][column] = user
     column_height[column] += 1
+    print_board()
     return True
 
 
