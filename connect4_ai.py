@@ -1,6 +1,6 @@
 import numpy as np
 import time
-DEPTH = 8 # DEPTH는 성능에 따라 조절
+DEPTH = 7 # DEPTH는 성능에 따라 조절
 ROW_SIZE = 6
 COLUMN_SIZE = 7
 MAX_COUNT=9999999
@@ -14,7 +14,7 @@ def ai(board):      #turn 넣을지 말지 결정해야됩니다
         print("--- %s seconds ---" %(time.time() - start_time))
         return bestCol
 
-def win_recursive(board, alpha, beta,level=0):
+def win_recursive(board, alpha, beta, level=0):
     if (level == DEPTH):
         return evaluate(board,1)-evaluate(board,0)
 
@@ -115,13 +115,13 @@ def evaluate(board,player):
     total_point+=pointByFeature(np.append(board[2:6,0:4].diagonal(),[enemy,enemy,enemy]),player) #linetype /
     total_point+=pointByFeature(np.append(board[1:6,0:5].diagonal(),[enemy,enemy]),player)
     total_point+=pointByFeature(np.append(board[0:6,0:6].diagonal(),[enemy]),player)
-    total_point+=pointByFeature(np.append(board[0:6,1:7].diagonal(),[enemy]),player)
-    total_point+=pointByFeature(np.append(board[0:5,2:7].diagonal(),[enemy,enemy]),player)
-    total_point+=pointByFeature(np.append(board[0:4,3:7].diagonal(),[enemy, enemy,enemy]),player)
+    total_point+=pointByFeature(np.append([enemy],board[0:6,1:7].diagonal()),player)
+    total_point+=pointByFeature(np.append([enemy,enemy],board[0:5,2:7].diagonal()),player)
+    total_point+=pointByFeature(np.append([enemy, enemy,enemy],board[0:4,3:7].diagonal()),player)
 
-    total_point+=pointByFeature(np.append(np.fliplr(board[0:4,0:4]).diagonal(),[enemy,enemy,enemy]),player) #linetype \
-    total_point+=pointByFeature(np.append(np.fliplr(board[0:5,0:5]).diagonal(),[enemy,enemy]),player)
-    total_point+=pointByFeature(np.append(np.fliplr(board[0:6, 0:6]).diagonal(),[enemy]),player)
+    total_point+=pointByFeature(np.append([enemy,enemy,enemy],np.fliplr(board[0:4,0:4]).diagonal()),player) #linetype \
+    total_point+=pointByFeature(np.append([enemy,enemy],np.fliplr(board[0:5,0:5]).diagonal()),player)
+    total_point+=pointByFeature(np.append([enemy],np.fliplr(board[0:6, 0:6]).diagonal()),player)
     total_point+=pointByFeature(np.append(np.fliplr(board[0:6, 1:7]).diagonal(),[enemy]),player)
     total_point+=pointByFeature(np.append(np.fliplr(board[1:6,2:7]).diagonal(),[enemy,enemy]),player)
     total_point+=pointByFeature(np.append(np.fliplr(board[2:6,3:7]).diagonal(),[enemy,enemy,enemy]),player)
