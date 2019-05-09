@@ -77,10 +77,9 @@ while True:
     print("AI가 밑에 처럼 놓았습니다.")
     while True:
         choice_ai = ai(np.copy(board))
-        print(choice_ai)
+        print(choice_ai+1)
         if choose(choice_ai+1): # AI가 두는것이 1
             break
-
     if is_game_over(1):
         print("AI가 승리하였습니다.")
         break
