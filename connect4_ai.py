@@ -5,28 +5,46 @@ DEPTH = 8  # DEPTH는 성능에 따라 조절
 ROW_SIZE = 6
 COLUMN_SIZE = 7
 MAX_COUNT = 9999999
-SEARCH_COLUMN=[3,2,4,1,5,0,6]
-def ai(board):  # turn 넣을지 말지 결정해야됩니다
+NOT_FIRST = 0
+STORE_LV2_POINT = np.full(COLUMN_SIZE * COLUMN_SIZE * COLUMN_SIZE, -MAX_COUNT)
+STORE_LV3_POINT = np.full(COLUMN_SIZE * COLUMN_SIZE, -MAX_COUNT)
+STORE_NEXT_CHOICE = np.full(COLUMN_SIZE * COLUMN_SIZE, -MAX_COUNT)
+
+
+def ai(board, person_choice):
+    global NOT_FIRST
+    global STORE_NEXT_CHOICE
     if np.sum(board[0, :]) == -7:  # AI 가 선공일 때 4th column에 두면 안됩니다
         return 2  # 4th가 아닌 3th column에 두도록
     else:
+        if (NOT_FIRST == 0):
+            SEARCH_COLUMN = [3, 2, 4, 1, 5, 0, 6]
+        else:
+            SEARCH_COLUMN = np.argsort(-(STORE_NEXT_CHOICE[person_choice * 7: person_choice * 7 + 7]))
+        print("person_choice : ", person_choice)
+        print("STORE_NEXT_CHOICE에 저장된 값 : ", STORE_NEXT_CHOICE[person_choice * 7: person_choice * 7 + 7])
+        print("COLUMN 검색하는 순서 : ", SEARCH_COLUMN)
         global DEPTH
-        left_time=120
-        first_start_time=time.time()
+        DEPTH=8
+        left_time = 120
+        first_start_time = time.time()
         while True:
             start_time = time.time()
-            bestCol = win_recursive(board, -MAX_COUNT, MAX_COUNT)
-            runing_time=time.time()-start_time
-            left_time-=runing_time
-            if left_time<6*runing_time or DEPTH>14:
+            bestCol = win_recursive(board, -MAX_COUNT, MAX_COUNT, SEARCH_COLUMN)
+            STORE_NEXT_CHOICE = STORE_LV2_POINT[bestCol * 49: bestCol * 49 + 49]
+            NOT_FIRST = 1
+            runing_time = time.time() - start_time
+            left_time -= runing_time
+            if left_time < 6 * runing_time or DEPTH > 14:
                 break
-            DEPTH+=1
+            DEPTH += 1
         print("최종 Depth:%d" % DEPTH)
         print("--- %s seconds ---" % (time.time() - first_start_time))
+
         return bestCol
 
 
-def win_recursive(board, alpha, beta, level=0):
+def win_recursive(board, alpha, beta, SEARCH_COLUMN, level=0, parent_col=-1):
     if (level == DEPTH):
         return evaluate(board, 1) - evaluate(board, 0)
 
@@ -39,19 +57,29 @@ def win_recursive(board, alpha, beta, level=0):
                 if type(child_board) == bool and child_board == False:
                     array[col_index] = MAX_COUNT
                 else:
-                    array[col_index] = win_recursive(child_board, alpha, beta, level + 1)
+                    array[col_index] = win_recursive(child_board, alpha, beta, SEARCH_COLUMN, level + 1, col_index)
                 max_wincount = max(array[col_index], max_wincount)
                 alpha = max(alpha, max_wincount)
                 if beta <= alpha:
                     break
+        if level == 2:
+            STORE_LV3_POINT[parent_col * 7: parent_col * 7 + 7] = array[:]
+
         if level == 0:
+            max_point = -MAX_COUNT
+            max_point_index = -1
             for i in range(0, COLUMN_SIZE):
                 if board[5, col_index] != -1:
                     array[i] = -MAX_COUNT - 1
             print(array)
-            return np.argmax(array)
+            for i in SEARCH_COLUMN:
+                if max_point < array[i]:
+                    max_point = array[i]
+                    max_point_index = i
+            return max_point_index
         else:
             return max_wincount
+
     else:
         array = np.full(COLUMN_SIZE, MAX_COUNT)
         min_wincount = MAX_COUNT
@@ -61,11 +89,13 @@ def win_recursive(board, alpha, beta, level=0):
                 if type(child_board) == bool and child_board == False:
                     array[col_index] = -MAX_COUNT
                 else:
-                    array[col_index] = win_recursive(child_board, alpha, beta, level + 1)
+                    array[col_index] = win_recursive(child_board, alpha, beta, SEARCH_COLUMN, level + 1, col_index)
                 min_wincount = min(array[col_index], min_wincount)
                 beta = min(beta, min_wincount)
                 if beta <= alpha:
                     break
+        if level == 1:
+            STORE_LV2_POINT[parent_col * 49:parent_col * 49 + 49] = STORE_LV3_POINT[:]
         if level == 0:
             print(array)
             return np.argmax(array)

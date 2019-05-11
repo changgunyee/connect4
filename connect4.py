@@ -2,7 +2,6 @@ from connect4_ai import *
 
 ROW_SIZE = 6
 COLUMN_SIZE = 7
-
 board = np.full((ROW_SIZE, COLUMN_SIZE), -1)
 column_height = [0 for num in range(COLUMN_SIZE)]
 
@@ -24,7 +23,7 @@ def print_board():
         print("|")
 
 
-def choose(column, user=1): # AI가 두는것이 1
+def choose(column, user=1):  # AI가 두는것이 1
     column -= 1
     if column_height[column] >= ROW_SIZE or column < 0 or column >= COLUMN_SIZE:
         return False
@@ -62,31 +61,33 @@ def is_game_over(user):
 
 
 first_person = int(input("선공:1, 후공:2  선택하세요. :"))
+global person_choice
 if first_person == 1:
     while True:
-        i = int(input(menu_str))
+        person_choice = int(input(menu_str))
         while True:
-            if(i!=4):
+            if (person_choice != 4):
                 break
             print("선공은 4번 컬럼에 놓을수 없습니다")
-            i = int(input(menu_str))
-        if choose(i, 0):    # 사람이 두는것이 0
+            person_choice = int(input(menu_str))
+        if choose(person_choice, 0):  # 사람이 두는것이 0
             break
 
 while True:
     print("AI가 밑에 처럼 놓았습니다.")
     while True:
-        choice_ai = ai(np.copy(board))
-        print(choice_ai+1)
-        if choose(choice_ai+1): # AI가 두는것이 1
+        choice_ai = ai(np.copy(board), person_choice - 1)
+        print("AI_choice : ", choice_ai)
+        if choose(choice_ai + 1):  # AI가 두는것이 1
             break
+
     if is_game_over(1):
         print("AI가 승리하였습니다.")
         break
 
     while True:
-        i = int(input(menu_str))
-        if choose(i, 0):
+        person_choice = int(input(menu_str))
+        if choose(person_choice, 0):
             break
 
     if is_game_over(0):
